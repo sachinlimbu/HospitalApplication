@@ -1,8 +1,13 @@
 package com.org.hospitalapplication
 
+import android.app.SearchManager
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.org.hospitalapplication.data.HospitalData
 import kotlinx.android.synthetic.main.activity_main.*
@@ -14,15 +19,47 @@ import java.nio.charset.Charset
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var hospitalAdapter:HospitalAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val hospitalData = readHospitalData()
         recycler_view_hospital_main.layoutManager = LinearLayoutManager(this)
-        recycler_view_hospital_main.adapter = HospitalAdapter(hospitalData)
+
+        hospitalAdapter = HospitalAdapter(hospitalData)
+        recycler_view_hospital_main.adapter = hospitalAdapter
     }
 
-    private fun readHospitalData() : List<HospitalData>{
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+
+        val inflater:MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_main,menu)
+
+        val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+
+        val searchItem = menu?.findItem(R.id.action_search)
+
+        val searchView = searchItem?.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                hospitalAdapter.filter.filter(newText)
+                return false
+            }
+
+        })
+
+        return true
+    }
+
+    private fun readHospitalData() : MutableList<HospitalData>{
 
         val hospitalList = ArrayList<HospitalData>()
         val inputStream: InputStream = resources.openRawResource(R.raw.hospital)
