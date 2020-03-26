@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">HospitalApplication</string>
+    <string name="organisationName">OrganisationName</string>
+    <string name="sector">Sector</string>
 </resources>

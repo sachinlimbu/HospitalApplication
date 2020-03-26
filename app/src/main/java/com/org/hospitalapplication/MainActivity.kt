@@ -3,7 +3,9 @@ package com.org.hospitalapplication
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.org.hospitalapplication.data.HospitalData
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -15,10 +17,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        readHospitalData()
+        val hospitalData = readHospitalData()
+        recycler_view_hospital_main.layoutManager = LinearLayoutManager(this)
+        recycler_view_hospital_main.adapter = HospitalAdapter(hospitalData)
     }
 
-    private fun readHospitalData(){
+    private fun readHospitalData() : List<HospitalData>{
 
         val hospitalList = ArrayList<HospitalData>()
         val inputStream: InputStream = resources.openRawResource(R.raw.hospital)
@@ -60,5 +64,6 @@ class MainActivity : AppCompatActivity() {
         } catch (e: RuntimeException) {
             Log.e("MainActivity", "Error data was not able to read:" , e)
         }
+        return hospitalList
     }
 }
