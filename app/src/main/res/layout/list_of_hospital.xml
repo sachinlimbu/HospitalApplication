@@ -7,7 +7,7 @@
     android:layout_margin="8dp"
     android:background="#FFFFFF"
     android:backgroundTint="#C5BEBE"
-    app:contentPadding="16dp">
+    app:contentPadding="20dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="371dp"
@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/organisationName"
-            android:textSize="24sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
