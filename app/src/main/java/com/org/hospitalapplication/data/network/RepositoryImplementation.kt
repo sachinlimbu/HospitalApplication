@@ -1,9 +1,9 @@
-package com.org.hospitalapplication.network
+package com.org.hospitalapplication.data.network
 
 import android.app.Application
 import android.util.Log
 import com.org.hospitalapplication.R
-import com.org.hospitalapplication.model.HospitalData
+import com.org.hospitalapplication.data.model.HospitalData
 import io.reactivex.Single
 import java.io.BufferedReader
 import java.io.InputStream
@@ -16,6 +16,8 @@ class RepositoryImplementation(private val application: Application) :
     override fun getData(): Single<List<HospitalData>> {
         return Single.fromCallable { readHospitalData() }
     }
+
+//    private lateinit var application: Application
 
     private fun readHospitalData() : List<HospitalData>{
 

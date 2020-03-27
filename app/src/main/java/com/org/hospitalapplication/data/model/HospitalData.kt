@@ -1,4 +1,4 @@
-package com.org.hospitalapplication.model
+package com.org.hospitalapplication.data.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
