@@ -1,6 +1,7 @@
 package com.org.hospitalapplication.data.model
 
 import android.os.Parcelable
+import io.reactivex.Single
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

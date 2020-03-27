@@ -5,17 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.org.hospitalapplication.adapters.HospitalAdapter
 import com.org.hospitalapplication.data.model.HospitalData
-import com.org.hospitalapplication.data.network.RepositoryImplementation
 import com.org.hospitalapplication.viewmodels.HospitalViewModel
 import com.org.hospitalapplication.di.component.DaggerHospitalComponent
 import com.org.hospitalapplication.di.module.HospitalViewModuleModule
-import com.org.hospitalapplication.viewmodels.HospitalsViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -34,16 +32,22 @@ class MainActivity : AppCompatActivity() {
             .hospitalViewModuleModule(HospitalViewModuleModule(this,application))
             .build()
             .inject(this)
+        recycler_view_hospital_main.layoutManager = LinearLayoutManager(this)
+        hospitalViewModel._mHospitalLoadingState.observe(this, Observer {
 
-        hospitalViewModel.mHospitalDataList.observe(this, Observer {
-            hospitalAdapter =
-                HospitalAdapter(
-                    it.toMutableList()
-                ) { hospitalData -> onHospitalClick(hospitalData) }
-            recycler_view_hospital_main.adapter = hospitalAdapter
-            recycler_view_hospital_main.layoutManager = LinearLayoutManager(this)
+            when(it){
+                HospitalViewModel.LoadingHospitalState.IN_PROGRESS -> displayProgress()
+                is HospitalViewModel.LoadingHospitalState.SUCCESS -> {
+                    hospitalAdapter =
+                        HospitalAdapter(
+                            it.hospitalsData.toMutableList()
+                        ) { hospitalData -> onHospitalClick(hospitalData) }
+                    recycler_view_hospital_main.adapter = hospitalAdapter
+                }
+                is HospitalViewModel.LoadingHospitalState.ERROR -> displayToast(it.message)
+            }
+
         })
-
         hospitalViewModel.getHospitalData()
     }
 
@@ -79,6 +83,15 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
+    }
+
+    private fun displayProgress(){
+        //show progress bar
+        displayToast("Fetching hospital list")
+
+    }
+    private fun displayToast(message:String){
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
     }
 
 }

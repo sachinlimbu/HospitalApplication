@@ -27,7 +27,6 @@ class RepositoryImplementation(private val application: Application) :
         val reader = BufferedReader(streamReader)
         var line: String
 
-        try {
             while (reader.readLine() != null){
                 line = reader.readLine().replace('\uFFFD',',')
                 val hospitalDetails =  line.split(",").toTypedArray()
@@ -58,9 +57,6 @@ class RepositoryImplementation(private val application: Application) :
                 hospitalList.add(hospital)
                 Log.i("MyActivity", "$hospital")
             }
-        } catch (e: RuntimeException) {
-            Log.e("MainActivity", "Error data was not able to read:" , e)
-        }
         return hospitalList
     }
 }
