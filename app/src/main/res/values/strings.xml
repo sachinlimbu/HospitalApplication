@@ -3,4 +3,16 @@
     <string name="organisationName">OrganisationName</string>
     <string name="sector">Sector</string>
     <string name="search">Search</string>
+    <string name="main_header_image">main header image</string>
+    <string name="profile_icon_star">profile icon star</string>
+    <string name="subtype">Subtype</string>
+    <string name="body">body of the screen</string>
+    <string name="organisation_name">Organisation Name</string>
+    <string name="address_1">Address 1</string>
+    <string name="address_2">Address 2</string>
+    <string name="address_3">Address 3</string>
+    <string name="post_code">Post Code</string>
+    <string name="parent_name">Parent Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="email">Email</string>
 </resources>

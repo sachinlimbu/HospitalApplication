@@ -2,6 +2,7 @@ package com.org.hospitalapplication
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -20,20 +21,21 @@ import java.nio.charset.Charset
 class MainActivity : AppCompatActivity() {
 
     private lateinit var hospitalAdapter:HospitalAdapter
+    private lateinit var hospitalData:MutableList<HospitalData>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val hospitalData = readHospitalData()
+        hospitalData = readHospitalData()
+
         recycler_view_hospital_main.layoutManager = LinearLayoutManager(this)
 
-        hospitalAdapter = HospitalAdapter(hospitalData)
+        hospitalAdapter = HospitalAdapter(hospitalData){hospitalData -> onHospitalClick(hospitalData) }
         recycler_view_hospital_main.adapter = hospitalAdapter
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
 
         val inflater:MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_main,menu)
@@ -48,14 +50,11 @@ class MainActivity : AppCompatActivity() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 hospitalAdapter.filter.filter(newText)
                 return false
             }
-
         })
-
         return true
     }
 
@@ -102,5 +101,15 @@ class MainActivity : AppCompatActivity() {
             Log.e("MainActivity", "Error data was not able to read:" , e)
         }
         return hospitalList
+    }
+
+    private fun onHospitalClick(detailPosition: HospitalData) {
+
+        startActivity(
+            Intent(this,DetailActivity::class.java).apply {
+                putExtra(MAIN_ACTIVITY_TO_DETAIL_PASS, detailPosition)
+            }
+        )
+
     }
 }
