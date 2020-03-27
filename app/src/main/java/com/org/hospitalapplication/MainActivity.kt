@@ -10,31 +10,30 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.org.hospitalapplication.adapters.HospitalAdapter
-import com.org.hospitalapplication.model.HospitalData
+import com.org.hospitalapplication.data.model.HospitalData
+import com.org.hospitalapplication.data.network.RepositoryImplementation
 import com.org.hospitalapplication.viewmodels.HospitalViewModel
+import com.org.hospitalapplication.di.component.DaggerHospitalComponent
+import com.org.hospitalapplication.di.module.HospitalViewModuleModule
 import com.org.hospitalapplication.viewmodels.HospitalsViewModelFactory
-import com.org.hospitalapplication.network.RepositoryImplementation
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     private lateinit var hospitalAdapter: HospitalAdapter
 
-    private lateinit var hospitalViewModel: HospitalViewModel
+    @Inject
+    lateinit var hospitalViewModel: HospitalViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        hospitalViewModel = ViewModelProvider(
-            this,
-            HospitalsViewModelFactory(
-                RepositoryImplementation(
-                    application
-                )
-            )
-        ).get(HospitalViewModel::class.java)
-
+        DaggerHospitalComponent.builder()
+            .hospitalViewModuleModule(HospitalViewModuleModule(this,application))
+            .build()
+            .inject(this)
 
         hospitalViewModel.mHospitalDataList.observe(this, Observer {
             hospitalAdapter =
@@ -47,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 
         hospitalViewModel.getHospitalData()
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
@@ -72,7 +70,6 @@ class MainActivity : AppCompatActivity() {
         })
         return true
     }
-
 
     private fun onHospitalClick(detailPosition: HospitalData) {
 

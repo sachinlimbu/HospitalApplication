@@ -9,7 +9,7 @@ buildscript {
         cardview_version = '1.0.0'
         room_version= '2.2.5'
         lifecycle_version = '2.2.0'
-
+        dagger_version = "2.25.2"
     }
 
     repositories {
