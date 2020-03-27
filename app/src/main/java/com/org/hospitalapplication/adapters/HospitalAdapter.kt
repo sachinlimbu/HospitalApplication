@@ -1,12 +1,12 @@
-package com.org.hospitalapplication
+package com.org.hospitalapplication.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.org.hospitalapplication.data.HospitalData
+import com.org.hospitalapplication.R
+import com.org.hospitalapplication.model.HospitalData
 import kotlinx.android.synthetic.main.list_of_hospital.view.*
 import kotlin.collections.ArrayList
 
@@ -58,7 +58,7 @@ class HospitalAdapter(
                         hospitalList.addAll(hospitalListAll)
                     }else{
                          for(item in hospitalListAll){
-                             if(item.organisationName.toLowerCase().contains(constraint.toString().toLowerCase())){
+                             if(item.organisationName?.toLowerCase()?.contains(constraint.toString().toLowerCase())!!){
                                  hospitalList.add(item)
                              }
                          }
