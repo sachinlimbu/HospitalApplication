@@ -3,7 +3,6 @@ package com.org.hospitalapplication
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import androidx.appcompat.widget.SearchView
@@ -13,37 +12,47 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.org.hospitalapplication.adapters.HospitalAdapter
 import com.org.hospitalapplication.model.HospitalData
 import com.org.hospitalapplication.viewmodels.HospitalViewModel
+import com.org.hospitalapplication.viewmodels.HospitalsViewModelFactory
+import com.org.hospitalapplication.network.RepositoryImplementation
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.lang.RuntimeException
-import java.nio.charset.Charset
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var hospitalAdapter: HospitalAdapter
-    private lateinit var hospitalViewModel:HospitalViewModel
+
+    private lateinit var hospitalViewModel: HospitalViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        hospitalViewModel = ViewModelProvider(
+            this,
+            HospitalsViewModelFactory(
+                RepositoryImplementation(
+                    application
+                )
+            )
+        ).get(HospitalViewModel::class.java)
 
-        applicationContext.let {
-            hospitalViewModel = ViewModelProvider(this).get(HospitalViewModel::class.java)
 
-        }
-        hospitalAdapter = HospitalAdapter(hospitalViewModel.getHospitalList()){ hospitalData -> onHospitalClick(hospitalData) }
-        recycler_view_hospital_main.adapter = hospitalAdapter
-        recycler_view_hospital_main.layoutManager = LinearLayoutManager(this)
-        }
+        hospitalViewModel.mHospitalDataList.observe(this, Observer {
+            hospitalAdapter =
+                HospitalAdapter(
+                    it.toMutableList()
+                ) { hospitalData -> onHospitalClick(hospitalData) }
+            recycler_view_hospital_main.adapter = hospitalAdapter
+            recycler_view_hospital_main.layoutManager = LinearLayoutManager(this)
+        })
+
+        hospitalViewModel.getHospitalData()
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
-        val inflater:MenuInflater = menuInflater
-        inflater.inflate(R.menu.menu_main,menu)
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_main, menu)
 
 //        val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
 
@@ -51,10 +60,11 @@ class MainActivity : AppCompatActivity() {
 
         val searchView = searchItem?.actionView as SearchView
 
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
+
             override fun onQueryTextChange(newText: String?): Boolean {
                 hospitalAdapter.filter.filter(newText)
                 return false
@@ -62,7 +72,6 @@ class MainActivity : AppCompatActivity() {
         })
         return true
     }
-
 
 
     private fun onHospitalClick(detailPosition: HospitalData) {
@@ -74,4 +83,5 @@ class MainActivity : AppCompatActivity() {
         )
 
     }
+
 }
