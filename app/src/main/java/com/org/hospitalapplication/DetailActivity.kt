@@ -2,7 +2,9 @@ package com.org.hospitalapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.org.hospitalapplication.data.HospitalData
+import com.org.hospitalapplication.MAIN_ACTIVITY_TO_DETAIL_PASS
+import com.org.hospitalapplication.R
+import com.org.hospitalapplication.model.HospitalData
 import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailActivity : AppCompatActivity() {
