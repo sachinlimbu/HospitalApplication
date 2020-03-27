@@ -11,7 +11,8 @@ import kotlinx.android.synthetic.main.list_of_hospital.view.*
 import kotlin.collections.ArrayList
 
 class HospitalAdapter(
-    private val hospitalList:MutableList<HospitalData>
+    private val hospitalList:MutableList<HospitalData>,
+    private val clickListener: (HospitalData) -> Unit
 ) :RecyclerView.Adapter<HospitalAdapter.HospitalViewHolder>(),Filterable{
 
     private val hospitalListAll = ArrayList(hospitalList)
@@ -29,14 +30,21 @@ class HospitalAdapter(
 
     override fun onBindViewHolder(holder: HospitalViewHolder, position: Int) {
         val currentItem = hospitalList[position]
-
-        holder.organisationName.text = currentItem.organisationName
-        holder.sector.text = currentItem.sector
+        holder.bind(currentItem)
     }
 
-    class HospitalViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
-        val organisationName: TextView = itemView.organisationName_id
-        val sector: TextView = itemView.sector_id
+     inner class HospitalViewHolder(
+         private val viewItem: View
+     ): RecyclerView.ViewHolder(viewItem) {
+
+        fun bind(hospital:HospitalData){
+            viewItem.apply {
+                organisationName_id.text = hospital.organisationName
+                sector_id.text = hospital.sector
+
+                setOnClickListener { clickListener(hospital) }
+            }
+        }
     }
 
     override fun getFilter(): Filter {
@@ -59,7 +67,6 @@ class HospitalAdapter(
                         it.values = hospitalList
                     }
                 }
-
                 //runs on ui thread
                 override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                     if(hospitalList.isNullOrEmpty())
