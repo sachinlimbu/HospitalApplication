@@ -6,25 +6,34 @@ import androidx.lifecycle.ViewModel
 import com.org.hospitalapplication.data.network.Repository
 import com.org.hospitalapplication.data.model.HospitalData
 import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Inject
 
 class HospitalViewModel (private val repository: Repository) :ViewModel() {
-    private val _mHospitalDataList = MutableLiveData<List<HospitalData>>()
-    val mHospitalDataList:LiveData<List<HospitalData>>
-        get() = _mHospitalDataList
+    val _mHospitalLoadingState = MutableLiveData<LoadingHospitalState>()
+
 
     private val compositeDisposable = CompositeDisposable()
 
     fun getHospitalData() {
-
+        _mHospitalLoadingState.postValue(LoadingHospitalState.IN_PROGRESS)
         compositeDisposable.add(
             repository.getData()
                 .subscribe({
-                    _mHospitalDataList.value = it
-                }, {})
+                    if(it.isEmpty()){
+                        _mHospitalLoadingState.value = LoadingHospitalState.ERROR("No Hospital found")
+                    }else{
+                        _mHospitalLoadingState.value = LoadingHospitalState.SUCCESS(it)
+                    }
+                }, {
+                    _mHospitalLoadingState.value = LoadingHospitalState.ERROR(it.localizedMessage?:"Some error occurred")
+                })
         )
     }
 
+    sealed class LoadingHospitalState{
+        object IN_PROGRESS:LoadingHospitalState()
+        data class SUCCESS(val hospitalsData:List<HospitalData>):LoadingHospitalState()
+        data class ERROR(val message:String):LoadingHospitalState()
+    }
 
     override fun onCleared() {
         compositeDisposable.clear()
