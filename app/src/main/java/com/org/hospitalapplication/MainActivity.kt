@@ -19,10 +19,8 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     private lateinit var hospitalAdapter: HospitalAdapter
-
     @Inject
     lateinit var hospitalViewModel: HospitalViewModel
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +30,12 @@ class MainActivity : AppCompatActivity() {
             .hospitalViewModuleModule(HospitalViewModuleModule(this,application))
             .build()
             .inject(this)
+
         recycler_view_hospital_main.layoutManager = LinearLayoutManager(this)
         hospitalViewModel._mHospitalLoadingState.observe(this, Observer {
 
             when(it){
-                HospitalViewModel.LoadingHospitalState.IN_PROGRESS -> displayProgress()
+                is HospitalViewModel.LoadingHospitalState.IN_PROGRESS -> displayProgress()
                 is HospitalViewModel.LoadingHospitalState.SUCCESS -> {
                     hospitalAdapter =
                         HospitalAdapter(
@@ -46,27 +45,19 @@ class MainActivity : AppCompatActivity() {
                 }
                 is HospitalViewModel.LoadingHospitalState.ERROR -> displayToast(it.message)
             }
-
         })
         hospitalViewModel.getHospitalData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_main, menu)
-
-//        val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-
         val searchItem = menu?.findItem(R.id.action_search)
-
         val searchView = searchItem?.actionView as SearchView
-
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 hospitalAdapter.filter.filter(newText)
                 return false
@@ -76,19 +67,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onHospitalClick(detailPosition: HospitalData) {
-
         startActivity(
             Intent(this, DetailActivity::class.java).apply {
                 putExtra(MAIN_ACTIVITY_TO_DETAIL_PASS, detailPosition)
             }
         )
-
     }
 
     private fun displayProgress(){
-        //show progress bar
         displayToast("Fetching hospital list")
-
     }
     private fun displayToast(message:String){
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show()

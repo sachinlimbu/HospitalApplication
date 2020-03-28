@@ -1,7 +1,6 @@
 package com.org.hospitalapplication.di.module
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import com.org.hospitalapplication.MainActivity
 import com.org.hospitalapplication.data.network.Repository
@@ -11,7 +10,6 @@ import com.org.hospitalapplication.viewmodels.HospitalViewModel
 import com.org.hospitalapplication.viewmodels.HospitalsViewModelFactory
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 
 @Module
